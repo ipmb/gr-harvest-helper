@@ -75,6 +75,10 @@ function detectGitlab() {
   );
 }
 
+function detectGithub() {
+  return document && document.getElementsByClassName('js-issue-title').length > 0;
+}
+
 async function jiraGetIssueTitle() {
   let issueId;
   let issueIdMatches = document.title.match(/\[(.*?)]/);
@@ -121,6 +125,16 @@ function gitlabGetIssueTitle() {
   };
 }
 
+function githubGetIssueTitle() {
+  var taskName = document.getElementsByClassName('js-issue-title')[0].textContent.trim();
+  var taskId = document.getElementsByName('issue')[0].value;
+  var title = `#${taskId}: ${taskName}`;
+  return {
+    id: taskId,
+    title: title,
+  };
+}
+
 if (detectJira()) {
   GRlog('jira detected');
   jiraGetIssueTitle().then((res) => {
@@ -132,4 +146,7 @@ if (detectJira()) {
 } else if (detectGitlab()) {
   GRlog('gitlab detected');
   chrome.runtime.sendMessage(gitlabGetIssueTitle());
+} else if (detectGithub()) {
+  GRlog('github detected');
+  chrome.runtime.sendMessage(githubGetIssueTitle());
 }
