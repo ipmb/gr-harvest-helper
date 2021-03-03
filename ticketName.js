@@ -104,7 +104,7 @@ async function jiraGetIssueTitle() {
     });
   return {
     id: issueId,
-    title: issueTitle,
+    title: `${issueId}: ${issueTitle}`,
   };
 }
 
