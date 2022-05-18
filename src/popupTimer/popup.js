@@ -14,7 +14,10 @@ chrome.runtime.onMessage.addListener(function (response) {
 
 chrome.tabs.query({ currentWindow: true, active: true }, function (activeTab) {
   setTimeout(() => {
-    chrome.tabs.executeScript({ file: '/ticketName.js' });
+    chrome.scripting.executeScript({
+      files: ['ticketName.js'],
+      target: { tabId: activeTab[0].id },
+    });
   }, 1000);
   tab = activeTab;
   tabURL = tab[0].url;
@@ -28,9 +31,9 @@ chrome.runtime.onInstalled.addListener(function (details) {
     function () {
       setTimeout(() => {
         if (details.reason === 'install') {
-          chrome.tabs.executeScript({ code: 'installModal()' });
+          chrome.scripting.executeScript({ code: 'installModal()' });
         } else if (details.reason === 'update') {
-          chrome.tabs.executeScript({ code: 'updateModal()' });
+          chrome.scripting.executeScript({ code: 'updateModal()' });
         }
       }, 1050);
     }
