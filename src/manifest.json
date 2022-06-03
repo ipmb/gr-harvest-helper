@@ -1,11 +1,15 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Grey Rook Harvest Time Tracking Helper",
   "version": "3.0.1",
   "description": "Helps you to link your tracked Time to issues and stories. Supported is Gitlab, Jira and Zammad.",
   "author": "Grey Rook GmbH",
-  "browser_action": {
-    "default_icon": "images/harvest-icon-48.png",
+  "action": {
+    "default_icon": {
+      "16": "images/harvest-icon-48.png",
+      "24": "images/harvest-icon-48.png",
+      "32": "images/harvest-icon-48.png"
+    },
     "default_popup": "popupTimer/popup.html"
   },
   "icons": {
@@ -14,11 +18,17 @@
     "128": "images/harvest-icon-128.png"
   },
   "web_accessible_resources": [
-   "docs/images/modalImage.png"
+    {
+      "resources": ["docs/images/modalImage.png"],
+      "matches": ["<all_urls>"]
+    }
   ],
   "background": {
-    "scripts": ["popupTimer/popup.js"]
+    "service-worker": ["popupTimer/popup.js"]
   },
-  "permissions": ["activeTab", "<all_urls>", "tabs"],
-  "content_security_policy": "script-src 'self' https://platform.harvestapp.com/assets/platform.js; object-src 'self'"
+  "permissions": ["activeTab", "tabs", "scripting"],
+  "host_permissions": ["https://*/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://platform.harvestapp.com"
+  }
 }
