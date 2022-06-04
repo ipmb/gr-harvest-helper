@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Grey Rook Harvest Time Tracking Helper",
-  "version": "3.0.1",
-  "description": "Helps you to link your tracked Time to issues and stories. Supported is Gitlab, Jira and Zammad.",
-  "author": "Grey Rook GmbH",
+  "name": "Unofficial Harvest Time Tracking Helper",
+  "version": "3.1.0",
+  "description": "Unofficial Harvest time tracker which links your time logs to issues in supported trackers (Gitlab, GitHub, Jira and Zammad)",
+  "author": "Lincoln Loop",
   "action": {
     "default_icon": {
       "16": "images/harvest-icon-48.png",
