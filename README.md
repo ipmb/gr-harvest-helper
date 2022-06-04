@@ -15,7 +15,7 @@ Earlier versions of this plugin displayed a time tracking button on Jira — thi
 The official [harvest-jira](https://www.getharvest.com/apps-and-integrations/jira) integration is done via a Jira plugin — which might not be possible or desirable in some cases (for example you don't have an admin account on your client's Jira instance).
 
 # Screenshot
-![Example](./docs/images/modalImage.png)
+![Example](./docs/images/screenshot.png)
 
 # Install the development version
 - Get the code:
