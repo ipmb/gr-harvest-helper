@@ -1,7 +1,7 @@
 # Harvest Issue Board Plugin
 
-This extension adds a Harvest time tracking button for Jira, Zammad and GitLab issues (active sprints page, issue page). No synchronization to the webpage is done, all data stays in Harvest.
- 
+This extension adds a Harvest time tracking button for Jira, Zammad, GitHub, and GitLab issues (active sprints page, issue page). No synchronization to the webpage is done, all data stays in Harvest.
+
  * [Chrome Store](https://chrome.google.com/webstore/detail/jira-harvest-time-trackin/klgljijecjfkdfobihclllkadmoeokgg)
  * [Mozilla Addons](https://addons.mozilla.org/de/firefox/addon/jira-harvest-helper)
 
@@ -19,9 +19,13 @@ The official [harvest-jira](https://www.getharvest.com/apps-and-integrations/jir
 
 # Install the development version
 - Get the code:
-  - Either clone this repo (`git clone git@github.com:GreyRook/gr-harvest-helper.git`)
-  - Or download as a zip and unzip it (`https://github.com/GreyRook/gr-harvest-helper/archive/master.zip`)
+  - Either clone this repo (`git clone git@github.com:ipmb/gr-harvest-helper.git`)
+  - Or download as a zip and unzip it (`https://github.com/ipmb/gr-harvest-helper/archive/master.zip`)
 - Go to Chrome's extensions page (`chrome://extensions/`)
 - Disable the Chrome Store version of this extension (if installed)
 - Enable developer mode via the toggle in the top right
 - Click on "Load unpacked" (top left button) and choose the folder of the cloned repo
+
+# New Maintainer
+
+This extension was created by [Grey Rook GmbH](https://www.greyrook.com/) and is no longer maintained. [Lincoln Loop](https://lincolnloop.com) forked the code to add GitHub support and make it compatible with current Chrome Web Store requirements.

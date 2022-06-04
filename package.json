@@ -1,9 +1,9 @@
 {
-  "name": "greyrook-harvest-time-tracking-helper",
-  "version": "2.4",
+  "name": "unofficial-harvest-time-tracking-helper",
+  "version": "3.1.0",
   "description": "This extension adds a Harvest time tracking button for Jira, Zammad and GitLab issues (active sprints page, issue page).",
-  "repository": "http://git.r0k.de/greyrook/foss/harvest-jira-chrome.git",
-  "author": "Grey Rook GmbH",
+  "repository": "https://github.com/ipmb/harvest-jira-chrome.git",
+  "author": "Lincoln Loop",
   "scripts": {
     "lint": "eslint . --fix"
   },

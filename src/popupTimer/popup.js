@@ -1,5 +1,5 @@
 window._harvestPlatformConfig = {
-  applicationName: 'GreyRook',
+  applicationName: 'UnoficialTimeTrackerExtension',
   skipStyling: true,
 };
 
@@ -23,7 +23,7 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (activeTab) {
 chrome.runtime.onInstalled.addListener(function (details) {
   chrome.tabs.create(
     {
-      url: 'https://github.com/GreyRook/harvest-jira-chrome/blob/master/README.md',
+      url: 'https://github.com/ipmb/gr-harvest-helper#readme',
     },
     function () {
       setTimeout(() => {
