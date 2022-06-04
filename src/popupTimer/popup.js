@@ -23,23 +23,6 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (activeTab) {
   tabURL = tab[0].url;
 });
 
-chrome.runtime.onInstalled.addListener(function (details) {
-  chrome.tabs.create(
-    {
-      url: 'https://github.com/ipmb/gr-harvest-helper#readme',
-    },
-    function () {
-      setTimeout(() => {
-        if (details.reason === 'install') {
-          chrome.scripting.executeScript({ code: 'installModal()' });
-        } else if (details.reason === 'update') {
-          chrome.scripting.executeScript({ code: 'updateModal()' });
-        }
-      }, 1050);
-    }
-  );
-});
-
 window.onload = function () {
   let i = 0;
   const timeout = 2000; //2sec

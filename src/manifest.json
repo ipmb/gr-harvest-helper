@@ -20,7 +20,7 @@
   "background": {
     "service-worker": ["popupTimer/popup.js"]
   },
-  "permissions": ["activeTab", "tabs", "scripting"],
+  "permissions": ["activeTab", "scripting"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://platform.harvestapp.com"
   }
