@@ -5,7 +5,8 @@
   "repository": "https://github.com/ipmb/harvest-jira-chrome.git",
   "author": "Lincoln Loop",
   "scripts": {
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "build:firefox": "web-ext build --source-dir src --artifacts-dir dist --overwrite-dest"
   },
   "devDependencies": {
     "crx": "^5.0.1",
@@ -14,6 +15,6 @@
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^2.0.5",
     "uri-js": "^4.4.1",
-    "web-ext": "^5.5.0"
+    "web-ext": "^6.8.0"
   }
 }

@@ -4,3 +4,4 @@ node_modules/
 .web-extension-id
 *.crx
 /key.pem
+/dist
