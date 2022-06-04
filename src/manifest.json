@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Unofficial Harvest Time Tracking Helper",
-  "version": "3.1.1",
+  "name": "Harvest Time Tracking Helper (Unofficial)",
+  "version": "3.1.2",
   "description": "Unofficial Harvest time tracker which links your time logs to issues in supported trackers (Gitlab, GitHub, Jira and Zammad)",
   "author": "Lincoln Loop",
   "browser_action": {
@@ -22,9 +22,6 @@
   "permissions": ["activeTab"],
   "content_security_policy": "script-src 'self'; object-src 'self'; frame-src https://platform.harvestapp.com",
   "browser_specific_settings": {
-    "gecko": {
-      "id": "{f1156037-a8b4-4a18-84b0-419ba042865d}"
-    }
+    "gecko": {}
   }
-
 }
