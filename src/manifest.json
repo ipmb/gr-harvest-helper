@@ -17,17 +17,10 @@
     "48": "images/harvest-icon-48.png",
     "128": "images/harvest-icon-128.png"
   },
-  "web_accessible_resources": [
-    {
-      "resources": ["docs/images/modalImage.png"],
-      "matches": ["<all_urls>"]
-    }
-  ],
   "background": {
     "service-worker": ["popupTimer/popup.js"]
   },
   "permissions": ["activeTab", "tabs", "scripting"],
-  "host_permissions": ["https://*/*"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://platform.harvestapp.com"
   }
