@@ -16,7 +16,95 @@ const SNOWPACK_PUBLIC_HARVESTAPP_PLATFORM_HOST = "platform.harvestapp.com";
 const __SNOWPACK_ENV__ = {SNOWPACK_PUBLIC_HARVESTAPP_PLATFORM_HOST}
 // import "./platform.css"
 
-const HarvestPlatformStylesheet = {}
+const HarvestPlatformStylesheet = `
+.harvest-timer.styled {
+    -webkit-font-smoothing: antialiased;
+    background-image: linear-gradient(#fff, #eee);
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    color: #222;
+    cursor: pointer;
+    display: inline-block;
+    font: inherit;
+    font-size: 0;
+    height: 12px;
+    line-height: 1;
+    margin: 0;
+    padding: 3px;
+    position: relative;
+    vertical-align: top;
+    width: 12px;
+  }
+  .harvest-timer.styled:hover {
+    background-image: linear-gradient(#f8f8f8, #e8e8e8);
+  }
+  .harvest-timer.styled:active {
+    background: #eee;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+  .harvest-timer.styled::after {
+    background: url(//platform.harvestapp.com/img/icon-timer.dzg2GEgNRsgn.svg) 50% 50% no-repeat;
+    content: '';
+    display: inline-block;
+    font: inherit;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  .harvest-timer.styled.running {
+    background-image: linear-gradient(#53b2fc, #1385e5);
+    border-color: #075fa9;
+    color: #fff;
+  }
+  .harvest-timer.styled.running:hover {
+    background-image: linear-gradient(#49a4fd, #0e7add);
+  }
+  .harvest-timer.styled.running:active {
+    background: #1385e5;
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2);
+  }
+  #harvest-iframe {
+    background: white;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    height: 300px;
+    left: 50%;
+    margin: 0;
+    margin-left: -250px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    transition: height 150ms;
+    width: 500px;
+  }
+  @media (min-height: 400px) {
+    #harvest-iframe {
+      top: 10%;
+    }
+  }
+  @media (min-height: 550px) {
+    #harvest-iframe {
+      top: 20%;
+    }
+  }
+  .harvest-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    height: 100%;
+    left: 0;
+    opacity: 1;
+    overflow: scroll;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9998;
+  }`
+
 const scheme = __SNOWPACK_ENV__.SNOWPACK_PUBLIC_SCHEME || 'https'
 const baseUrl = `${scheme}://${__SNOWPACK_ENV__.SNOWPACK_PUBLIC_HARVESTAPP_PLATFORM_HOST}`
 
@@ -365,4 +453,3 @@ supported by your browser.`)
   }
 })()
 /* eslint-enable */
-
