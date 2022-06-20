@@ -30,6 +30,14 @@ The official [harvest-jira](https://www.getharvest.com/apps-and-integrations/jir
 
 The app stores don't allow add-ons that link to third-party JavaScript. They also don't allow unobfuscated JavaScript without the source. `extract_harvest_source.sh` will extract the original source JavaScript from Harvest's source maps and apply a patch so it runs as-is. The result is saved to `src/vendor/harvestPlatform.js`.
 
+The value for `HarvestPlatformStylesheet` in that file is a little trickier to extract. Currently this can be used to pull it out of the minimized JS:
+
+```shell
+$ curl https://platform.harvestapp.com/assets/platform.js | grep 'stylesheet:`' | awk -F 'stylesheet:`' '{print $2}' | npx prettier --stdin-filepath platform.css
+```
+
+Assuming you get valid CSS from that, it needs to be pasted as the value for `HarvestPlatformStylesheet` in `src/vendor/harvestPlatform.js`.
+
 # New Maintainer
 
 This extension was created by [Grey Rook GmbH](https://www.greyrook.com/) and is no longer maintained. [Lincoln Loop](https://lincolnloop.com) forked the code to add GitHub support and make it compatible with current Chrome Web Store requirements.
