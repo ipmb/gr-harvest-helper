@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Unofficial Harvest Time Tracking Helper",
-  "version": "3.1.0",
+  "version": "3.1.3",
   "description": "Unofficial Harvest time tracker which links your time logs to issues in supported trackers (Gitlab, GitHub, Jira and Zammad)",
   "author": "Lincoln Loop",
   "action": {
