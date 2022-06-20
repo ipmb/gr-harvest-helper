@@ -23,7 +23,7 @@ jobs:
         run: NODE_ENV=dev npm ci
       - name: Build Firefox extension
         if: github.ref != 'refs/heads/manifest@v3'
-        run: npx web-ext sign --source-dir src --api-key="$API_KEY" --api-secret="$API_SECRET"
+        run: ./web-ext-submit --source-dir src --api-key="$API_KEY" --api-secret="$API_SECRET"
         env:
           API_KEY: ${{ secrets.MOZ_API_KEY }}
           API_SECRET: ${{ secrets.MOZ_API_SECRET }}
