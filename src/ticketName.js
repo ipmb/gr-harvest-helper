@@ -71,8 +71,8 @@ function gitlabGetIssueTitle() {
 }
 
 function githubGetIssueTitle() {
-  var taskName = document.getElementsByClassName('js-issue-title')[0].textContent.trim();
-  var taskId = document.getElementsByName('issue')[0].value;
+  var taskName = document.getElementsByClassName('markdown-title')[0].textContent.trim();
+  var taskId = document.querySelector('h1[data-component="PH_Title"], h1.gh-header-title').querySelector('span')?.textContent;
   var title = `#${taskId}: ${taskName}`;
   return {
     id: taskId,
