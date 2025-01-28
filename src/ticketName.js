@@ -71,9 +71,16 @@ function gitlabGetIssueTitle() {
 }
 
 function githubGetIssueTitle() {
-  var taskName = document.getElementsByClassName('markdown-title')[0].textContent.trim();
-  var taskId = document.querySelector('h1[data-component="PH_Title"], h1.gh-header-title').querySelector('span')?.textContent;
-  var title = `${taskId}: ${taskName}`;
+  const taskNameElement = document.getElementsByClassName('markdown-title')[0];
+  const taskName = taskNameElement ? taskNameElement.textContent.trim() : 'No Title';
+
+  const taskId =
+    document
+      .querySelector('h1[data-component="PH_Title"], h1.gh-header-title')
+      ?.querySelector('span')?.textContent || 'No ID';
+
+  const title = `${taskId}: ${taskName}`;
+
   return {
     id: taskId,
     title: title,
