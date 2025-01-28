@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2024-01-27
+
+### Fixed
+ * Fix parsing of ID and title on GitHub issues and pull requests.
+
 ## [3.1.0] - 2022-06-03
 ### Added
  * Support time tracking on GitHub issues
