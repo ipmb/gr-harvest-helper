@@ -18,7 +18,8 @@
     "128": "images/harvest-icon-128.png"
   },
   "background": {
-    "service_worker": ["popupTimer/popup.js"]
+    "scripts": ["popupTimer/popup.js"],
+    "service_worker": "popupTimer/popup.js"
   },
   "permissions": ["activeTab", "scripting"],
   "content_security_policy": {
