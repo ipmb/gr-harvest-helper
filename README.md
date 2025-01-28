@@ -1,5 +1,7 @@
 # Harvest Issue Board Plugin
 
+**NOTE**: There is a `manifest-v3` branch which supports the new manifest version. Please use it for all future development.
+
 This extension adds a Harvest time tracking button for Jira, Zammad, GitHub, and GitLab issues (active sprints page, issue page). No synchronization to the webpage is done, all data stays in Harvest.
 
  * [Chrome Store](https://chrome.google.com/webstore/detail/unofficial-harvest-time-t/ehnegfjdaahblkfcbceipjclnfgepkom)
