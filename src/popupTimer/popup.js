@@ -14,7 +14,10 @@ chrome.runtime.onMessage.addListener(function (response) {
 
 chrome.tabs.query({ currentWindow: true, active: true }, function (activeTab) {
   setTimeout(() => {
-    chrome.tabs.executeScript({ file: '/ticketName.js' });
+    chrome.scripting.executeScript({
+      files: ['ticketName.js'],
+      target: { tabId: activeTab[0].id },
+    });
   }, 1000);
   tab = activeTab;
   tabURL = tab[0].url;
