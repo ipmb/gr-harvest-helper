@@ -21,7 +21,7 @@ function detectGitlab() {
 }
 
 function detectGithub() {
-  return document && document.getElementsByClassName('js-issue-title').length > 0;
+  return document && document.getElementsByClassName('markdown-title').length > 0;
 }
 
 async function jiraGetIssueTitle() {
@@ -73,7 +73,7 @@ function gitlabGetIssueTitle() {
 function githubGetIssueTitle() {
   var taskName = document.getElementsByClassName('markdown-title')[0].textContent.trim();
   var taskId = document.querySelector('h1[data-component="PH_Title"], h1.gh-header-title').querySelector('span')?.textContent;
-  var title = `#${taskId}: ${taskName}`;
+  var title = `${taskId}: ${taskName}`;
   return {
     id: taskId,
     title: title,

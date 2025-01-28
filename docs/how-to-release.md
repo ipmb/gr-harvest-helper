@@ -1,6 +1,6 @@
 # How to publish an updated extension package
 
-1. Increase the version number in the manifest.json file.
+1. Increase the version number in the `manifest.json` file.
 2. Create a zip file from the "extension" folder.
 3. Go to: https://chrome.google.com/webstore/devconsole.
 4. Select "Chrome Store Admins" on the dropdown at the top right.
