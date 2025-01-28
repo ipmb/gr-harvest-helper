@@ -23,5 +23,10 @@
   "permissions": ["activeTab", "scripting"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://platform.harvestapp.com"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{db2007e9-92f3-4875-9580-0a039b473605}"
+    }
   }
 }
