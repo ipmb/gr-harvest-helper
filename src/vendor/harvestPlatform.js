@@ -186,14 +186,17 @@ const baseUrl = `${scheme}://${__SNOWPACK_ENV__.SNOWPACK_PUBLIC_HARVESTAPP_PLATF
   }
   config = function () {
     if (window._harvestPlatformConfig) {
-      return window._harvestPlatformConfig
+      return window._harvestPlatformConfig;
     } else {
-      return JSON.parse(
-        document.querySelector('script[data-platform-config]').dataset
-          .platformConfig
-      )
+      const platformConfigScript = document.querySelector('script[data-platform-config]');
+      if (platformConfigScript) {
+        return JSON.parse(platformConfigScript.dataset.platformConfig);
+      } else {
+        console.error('Error: Platform config script not found.');
+        return {}; // Return a fallback empty object or handle appropriately
+      }
     }
-  }
+  };
   // Get data attributes from a given element
 
   // el - HTMLElement containing data attributes as JSON strings

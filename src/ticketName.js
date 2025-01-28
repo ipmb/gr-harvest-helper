@@ -21,7 +21,7 @@ function detectGitlab() {
 }
 
 function detectGithub() {
-  return document && document.getElementsByClassName('js-issue-title').length > 0;
+  return document && document.getElementsByClassName('markdown-title').length > 0;
 }
 
 async function jiraGetIssueTitle() {
@@ -71,15 +71,26 @@ function gitlabGetIssueTitle() {
 }
 
 function githubGetIssueTitle() {
-  var taskName = document.getElementsByClassName('markdown-title')[0].textContent.trim();
-  var taskId = document.querySelector('h1[data-component="PH_Title"], h1.gh-header-title').querySelector('span')?.textContent;
-  var title = `#${taskId}: ${taskName}`;
+  const taskNameElement = document.getElementsByClassName('markdown-title')[0];
+  const taskName = taskNameElement ? taskNameElement.textContent.trim() : 'No Title';
+
+  const taskId = document.querySelector('h1[data-component="PH_Title"], h1.gh-header-title')
+    ?.querySelector('span')?.textContent || 'No ID';
+
+  const title = `${taskId}: ${taskName}`;
+
+  // Log values for debugging
+  console.log("taskName:", taskName);
+  console.log("taskId:", taskId);
+  console.log("title:", title);
+
   return {
     id: taskId,
     title: title,
   };
 }
 
+GRlog("running script");
 if (detectJira()) {
   GRlog('jira detected');
   jiraGetIssueTitle().then((res) => {
@@ -93,5 +104,13 @@ if (detectJira()) {
   chrome.runtime.sendMessage(gitlabGetIssueTitle());
 } else if (detectGithub()) {
   GRlog('github detected');
-  chrome.runtime.sendMessage(githubGetIssueTitle());
+  GRlog("sending message");
+  chrome.runtime.sendMessage(githubGetIssueTitle(), (response) => {
+    if (chrome.runtime.lastError) {
+      console.error('Error sending message:', chrome.runtime.lastError.message);
+    } else {
+      console.log('Response from listener:', response);
+    }
+  });
+  GRlog("message sent");
 }
