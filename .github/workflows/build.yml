@@ -5,9 +5,35 @@ on:
   push:
 
 jobs:
-  build:
+  chrome:
     runs-on: ubuntu-latest
 
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install
+        run: NODE_ENV=dev npm ci
+      - name: Build Chrome extension
+        run: |
+            echo "$KEY_PEM" > key.pem
+            npx crx pack -o gr-harvest-helper.crx `pwd`/src
+        env:
+          KEY_PEM: ${{ secrets.CRX_KEY_PEM }}
+      - name: Upload Chrome extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-extension
+          path: gr-harvest-helper.crx
+  firefox:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,14 +57,3 @@ jobs:
         with:
           name: firefox-extension
           path: web-ext-artifacts
-      - name: Build Chrome extension
-        run: |
-            echo "$KEY_PEM" > key.pem
-            npx crx pack -o gr-harvest-helper.crx `pwd`/src
-        env:
-          KEY_PEM: ${{ secrets.CRX_KEY_PEM }}
-      - name: Upload Chrome extension
-        uses: actions/upload-artifact@v4
-        with:
-          name: chrome-extension
-          path: gr-harvest-helper.crx
