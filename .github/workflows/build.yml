@@ -23,15 +23,19 @@ jobs:
         run: NODE_ENV=dev npm ci
       - name: Build Chrome extension
         run: |
-            echo "$KEY_PEM" > key.pem
-            npx crx pack -o gr-harvest-helper.crx `pwd`/src
+          mkdir chrome-extension
+          cp -r src/* chrome-extension/
+          cd chrome-extension
+          zip -r ../gr-harvest-helper.zip .
+          cd ..
         env:
           KEY_PEM: ${{ secrets.CRX_KEY_PEM }}
       - name: Upload Chrome extension
         uses: actions/upload-artifact@v4
         with:
           name: chrome-extension
-          path: gr-harvest-helper.crx
+          path: gr-harvest-helper.zip
+
   firefox:
     runs-on: ubuntu-latest
     steps:
