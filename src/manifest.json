@@ -21,6 +21,12 @@
     "scripts": ["popupTimer/popup.js"],
     "service_worker": "popupTimer/popup.js"
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["ticketName.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "permissions": ["activeTab", "scripting"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://platform.harvestapp.com"

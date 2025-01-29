@@ -12,15 +12,31 @@ chrome.runtime.onMessage.addListener(function (response) {
   taskName = response.title ? response.title : 'select a task first';
 });
 
-chrome.tabs.query({ currentWindow: true, active: true }, function (activeTab) {
-  setTimeout(() => {
-    chrome.scripting.executeScript({
-      files: ['ticketName.js'],
-      target: { tabId: activeTab[0].id },
-    });
-  }, 1000);
+chrome.tabs.query({ currentWindow: true, active: true }, function (activeTabs) {
+  if (activeTabs.length === 0) {
+    console.error('No active tab found.');
+    return;
+  }
+
+  const activeTab = activeTabs[0];
   tab = activeTab;
-  tabURL = tab[0].url;
+  tabURL = activeTab.url;
+
+  setTimeout(() => {
+    chrome.scripting.executeScript(
+      {
+        files: ['/ticketName.js'],
+        target: { tabId: activeTab.id },
+      },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.error('Error executing script:', chrome.runtime.lastError.message);
+        } else {
+          console.log('Script executed successfully');
+        }
+      }
+    );
+  }, 1000);
 });
 
 window.onload = function () {
