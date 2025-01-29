@@ -47,7 +47,12 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install
         run: NODE_ENV=dev npm ci
+      - name: Lint
+        run: npx web-ext lint --source-dir src
       - name: Build Firefox extension
+        run: npx web-ext build --source-dir src
+      - name: Submit Firefox extension
+        if: github.ref == 'refs/tags/v*'
         run: npx web-ext sign --source-dir src --api-key="$API_KEY" --api-secret="$API_SECRET" --channel listed
         env:
           API_KEY: ${{ secrets.MOZ_API_KEY }}

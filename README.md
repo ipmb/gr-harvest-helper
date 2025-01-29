@@ -41,3 +41,20 @@ Assuming you get valid CSS from that, it needs to be pasted as the value for `Ha
 # New Maintainer
 
 This extension was created by [Grey Rook GmbH](https://www.greyrook.com/) and is no longer maintained. [Lincoln Loop](https://lincolnloop.com) forked the code to add GitHub support and make it compatible with current Chrome Web Store requirements.
+
+# Release
+
+1. Update the version in `package.json` and `src/manifest.json`
+2. Update the `CHANGELOG.md`
+3. Push new version:
+    ```shell
+    export VERSION="v$(jq -r .version <package.json)"
+    git add package.json src/manifest.json CHANGELOG.md
+    git commit -m "$VERSION"
+    git tag -s "$VERSION" -m "$VERSION"
+    git push && git push --tag
+    ```
+
+The Firefox extension should get updated by GitHub Actions.
+
+The Chrome extension can be downloaded from the artifacts of the GitHub Action and uploaded via https://chrome.google.com/webstore/devconsole/.
