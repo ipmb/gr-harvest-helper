@@ -1,8 +1,3 @@
-window._harvestPlatformConfig = {
-  applicationName: 'UnoficialTimeTrackerExtension',
-  skipStyling: true,
-};
-
 var taskName;
 var tabURL;
 var tab;
@@ -39,31 +34,32 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (activeTabs) {
   }, 1000);
 });
 
-window.onload = function () {
-  let i = 0;
-  const timeout = 2000; //2sec
-  const intervalTime = 10;
-  let taskNameInterval = setInterval(() => {
-    if (taskName !== undefined || i === timeout / intervalTime) {
-      clearInterval(taskNameInterval);
-      let item = { id: id, name: taskName };
-      const harvestTimer = document.getElementsByClassName('harvest-timer')[0];
-      if (harvestTimer) {
-        harvestTimer.setAttribute('data-item', JSON.stringify(item));
-        if (taskName !== undefined) {
-          harvestTimer.setAttribute('data-permalink', tabURL);
-        }
-        harvestTimer.click();
-        harvestTimer.setAttribute('top', '10px');
+let i = 0;
+const timeout = 2000; // 2 seconds
+const intervalTime = 10;
+
+// Polling for taskName
+let taskNameInterval = setInterval(() => {
+  if (taskName !== undefined || i === timeout / intervalTime) {
+    clearInterval(taskNameInterval);
+    let item = { id: id, name: taskName };
+    const harvestTimer = document.getElementsByClassName('harvest-timer')[0];
+    if (harvestTimer) {
+      harvestTimer.setAttribute('data-item', JSON.stringify(item));
+      if (taskName !== undefined) {
+        harvestTimer.setAttribute('data-permalink', tabURL);
       }
-    } else {
-      i++;
+      harvestTimer.click();
+      harvestTimer.setAttribute('top', '10px');
     }
-  }, intervalTime);
-};
+  } else {
+    i++;
+  }
+}, intervalTime);
 
-var frameDetected = false;
+let frameDetected = false;
 
+// Detecting iframe
 let detectFrame = setInterval(() => {
   const harvestIframe = document.getElementById('harvest-iframe');
   if (harvestIframe && !frameDetected) {
@@ -73,8 +69,10 @@ let detectFrame = setInterval(() => {
 
     const harvestOverlay = document.getElementsByClassName('harvest-overlay')[0];
 
-    harvestOverlay.style.background = 'white';
-    harvestOverlay.style.overflow = 'hidden';
+    if (harvestOverlay) {
+      harvestOverlay.style.background = 'white';
+      harvestOverlay.style.overflow = 'hidden';
+    }
 
     let scrollHeight = 300;
     setInterval(() => {

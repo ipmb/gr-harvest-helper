@@ -17,10 +17,6 @@
     "48": "images/harvest-icon-48.png",
     "128": "images/harvest-icon-128.png"
   },
-  "background": {
-    "scripts": ["popupTimer/popup.js"],
-    "service_worker": "popupTimer/popup.js"
-  },
   "web_accessible_resources": [
     {
       "resources": ["ticketName.js"],
@@ -35,5 +31,6 @@
     "gecko": {
       "id": "{db2007e9-92f3-4875-9580-0a039b473605}"
     }
-  }
+  },
+  "host_permissions": ["<all_urls>"]
 }
