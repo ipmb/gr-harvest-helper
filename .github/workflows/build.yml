@@ -26,7 +26,7 @@ jobs:
           mkdir chrome-extension
           cp -r src/* chrome-extension/
           cd chrome-extension
-          zip -r ../gr-harvest-helper.zip .
+          zip -r --exclude=.* ../gr-harvest-helper.zip .
           cd ..
         env:
           KEY_PEM: ${{ secrets.CRX_KEY_PEM }}
