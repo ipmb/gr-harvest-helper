@@ -20,7 +20,12 @@
   "web_accessible_resources": [
     {
       "resources": ["ticketName.js"],
-      "matches": ["<all_urls>"]
+      "matches": [
+        "https://gitlab.com/*",
+        "https://github.com/*",
+        "https://*.atlassian.net/*",
+        "https://zammad.com/*"
+      ]
     }
   ],
   "permissions": ["activeTab", "scripting"],
@@ -32,5 +37,10 @@
       "id": "{db2007e9-92f3-4875-9580-0a039b473605}"
     }
   },
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": [
+    "https://gitlab.com/*",
+    "https://github.com/*",
+    "https://*.atlassian.net/*",
+    "https://zammad.com/*"
+  ]
 }
