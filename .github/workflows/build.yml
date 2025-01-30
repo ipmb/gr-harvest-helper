@@ -23,10 +23,11 @@ jobs:
         run: NODE_ENV=dev npm ci
       - name: Build Chrome extension
         run: |
+          rm -rf chrome-extension
           mkdir chrome-extension
-          cp -r src/* chrome-extension/
+          rsync -av --exclude=".*" src/ chrome-extension/
           cd chrome-extension
-          zip -r --exclude=.* ../gr-harvest-helper.zip .
+          zip -r ../gr-harvest-helper.zip . -x "*.DS_Store"
           cd ..
         env:
           KEY_PEM: ${{ secrets.CRX_KEY_PEM }}
