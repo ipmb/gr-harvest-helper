@@ -22,20 +22,13 @@ jobs:
       - name: Install
         run: NODE_ENV=dev npm ci
       - name: Build Chrome extension
-        run: |
-          rm -rf chrome-extension
-          mkdir chrome-extension
-          rsync -av --exclude=".*" src/ chrome-extension/
-          cd chrome-extension
-          zip -r ../gr-harvest-helper.zip . -x "*.DS_Store"
-          cd ..
-        env:
-          KEY_PEM: ${{ secrets.CRX_KEY_PEM }}
+        run: rsync -av --exclude=".*" src/ chrome-extension/
+
       - name: Upload Chrome extension
         uses: actions/upload-artifact@v4
         with:
           name: gr-harvest-helper
-          path: gr-harvest-helper.zip
+          path: chrome-extension/
 
   firefox:
     runs-on: ubuntu-latest
