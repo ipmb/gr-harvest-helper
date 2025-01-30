@@ -34,7 +34,7 @@ jobs:
       - name: Upload Chrome extension
         uses: actions/upload-artifact@v4
         with:
-          name: chrome-extension
+          name: gr-harvest-helper
           path: gr-harvest-helper.zip
 
   firefox:
