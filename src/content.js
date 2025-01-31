@@ -11,35 +11,72 @@ function detectPlatform() {
   return null;
 }
 
+// Function to retrieve task details for JIRA
+async function jiraGetIssueTitle() {
+  let issueId;
+  const issueIdMatches = document.title.match(/\[(.*?)]/);
+
+  if (issueIdMatches) {
+    issueId = issueIdMatches[1];
+  } else {
+    // fallback to get issue id from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    issueId = urlParams.get('selectedIssue');
+  }
+
+  if (!issueId) return { id: 'No ID', title: 'Unknown' };
+
+  try {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const issueTitle = await fetch(`${protocol}//${hostname}/rest/api/2/issue/${issueId}`, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((response) => response.json())
+      .then((data) => data.fields.summary);
+
+    return { id: issueId, title: `${issueId}: ${issueTitle}` };
+  } catch (error) {
+    GRlog(`Error fetching JIRA issue title: ${error.message}`);
+    return { id: issueId, title: 'Unknown' };
+  }
+}
+
+// Function to retrieve task details for Zammad
+function zammadGetIssueTitle() {
+  const title =
+    document.querySelector('.ticket-title-update.js-objectTitle')?.textContent || 'No Title';
+  return { id: 'N/A', title };
+}
+
+// Function to retrieve task details for GitLab
+function gitlabGetIssueTitle() {
+  const taskName = document.querySelector('.title.qa-title')?.textContent || 'No Title';
+  const taskId = document.querySelector('.breadcrumbs-sub-title')?.textContent || 'No ID';
+  return { id: taskId, title: `${taskId}: ${taskName}` };
+}
+
+// Function to retrieve task details for GitHub
+function githubGetIssueTitle() {
+  const taskName = document.querySelector('.markdown-title')?.textContent.trim() || 'No Title';
+  const taskId =
+    document.querySelector('h1[data-component="PH_Title"], h1.gh-header-title span')?.textContent ||
+    'No ID';
+  return { id: taskId, title: `${taskId}: ${taskName}` };
+}
+
 // Function to retrieve task details based on the detected platform
 async function getTaskDetails(platform) {
   try {
     switch (platform) {
-      case 'jira': {
-        const issueId = new URLSearchParams(window.location.search).get('selectedIssue');
-        const issueTitle = document.title.match(/\[(.*?)]/)?.[1] || 'Unknown';
-        return { id: issueId, title: issueTitle };
-      }
-
-      case 'zammad': {
-        const zammadTitle = document.querySelector('.ticket-title-update.js-objectTitle')
-          .textContent;
-        return { id: 'N/A', title: zammadTitle };
-      }
-
-      case 'gitlab': {
-        const gitlabTitle = document.querySelector('.title.qa-title').textContent;
-        const gitlabId = document.querySelector('.breadcrumbs-sub-title').textContent;
-        return { id: gitlabId, title: `${gitlabId}: ${gitlabTitle}` };
-      }
-
-      case 'github': {
-        const githubTitle =
-          document.querySelector('.markdown-title')?.textContent.trim() || 'No Title';
-        const githubId = document.querySelector('h1 .gh-header-number')?.textContent || 'No ID';
-        return { id: githubId, title: githubTitle };
-      }
-
+      case 'jira':
+        return jiraGetIssueTitle();
+      case 'zammad':
+        return zammadGetIssueTitle();
+      case 'gitlab':
+        return gitlabGetIssueTitle();
+      case 'github':
+        return githubGetIssueTitle();
       default:
         return null;
     }
