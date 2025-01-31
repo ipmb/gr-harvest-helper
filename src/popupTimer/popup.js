@@ -2,64 +2,65 @@ var taskName;
 var tabURL;
 var tab;
 var id;
+
+// Listen for messages from the content script
 chrome.runtime.onMessage.addListener(function (response) {
-  id = response.id ? response.id : -1;
-  taskName = response.title ? response.title : 'select a task first';
+  if (response.id && response.title) {
+    id = response.id;
+    taskName = response.title;
+    console.log(`Task received: ID = ${id}, Title = ${taskName}`);
+    updateUI();
+  } else {
+    console.warn('Invalid message received:', response);
+  }
 });
 
-chrome.tabs.query({ currentWindow: true, active: true }, function (activeTabs) {
-  if (activeTabs.length === 0) {
-    console.error('No active tab found.');
+// Query the active tab and send a message to the content script
+chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+  if (tabs.length === 0) {
+    console.error('[GR-Time-Tracker]: No active tab found.');
     return;
   }
 
-  const activeTab = activeTabs[0];
-  tab = activeTab;
-  tabURL = activeTab.url;
+  const activeTab = tabs[0];
+  console.log('[GR-Time-Tracker]: Active Tab URL:', activeTab.url);
 
-  setTimeout(() => {
-    chrome.scripting.executeScript(
-      {
-        files: ['/ticketName.js'],
-        target: { tabId: activeTab.id },
-      },
-      () => {
+  if (/^https:\/\/(gitlab\.com|github\.com|.*\.atlassian\.net|zammad\.com)/.test(activeTab.url)) {
+    console.log('[GR-Time-Tracker]: Sending message to content script...');
+    setTimeout(() => {
+      chrome.tabs.sendMessage(activeTab.id, { action: 'getTaskDetails' }, (response) => {
         if (chrome.runtime.lastError) {
-          console.error('Error executing script:', chrome.runtime.lastError.message);
+          console.error(
+            '[GR-Time-Tracker]: Error communicating with content script:',
+            chrome.runtime.lastError.message
+          );
         } else {
-          console.log('Script executed successfully');
+          console.log('[GR-Time-Tracker]: Response from content script:', response);
         }
-      }
-    );
-  }, 1000);
+      });
+    }, 500);
+  } else {
+    console.warn('[GR-Time-Tracker]: Tab URL does not match required patterns.');
+  }
 });
 
-let i = 0;
-const timeout = 2000; // 2 seconds
-const intervalTime = 10;
-
-// Polling for taskName
-let taskNameInterval = setInterval(() => {
-  if (taskName !== undefined || i === timeout / intervalTime) {
-    clearInterval(taskNameInterval);
-    let item = { id: id, name: taskName };
-    const harvestTimer = document.getElementsByClassName('harvest-timer')[0];
-    if (harvestTimer) {
-      harvestTimer.setAttribute('data-item', JSON.stringify(item));
-      if (taskName !== undefined) {
-        harvestTimer.setAttribute('data-permalink', tabURL);
-      }
-      harvestTimer.click();
-      harvestTimer.setAttribute('top', '10px');
-    }
-  } else {
-    i++;
+// Function to update the popup UI
+function updateUI() {
+  const harvestTimer = document.querySelector('.harvest-timer');
+  if (!harvestTimer) {
+    console.warn('Harvest timer element not found.');
+    return;
   }
-}, intervalTime);
 
+  const item = { id: id || 'N/A', name: taskName || 'No Task Selected' };
+  harvestTimer.setAttribute('data-item', JSON.stringify(item));
+  harvestTimer.setAttribute('data-permalink', tabURL || 'N/A');
+  harvestTimer.click();
+  console.log('UI updated with task details:', item);
+}
+
+// Detect and adjust the iframe if present
 let frameDetected = false;
-
-// Detecting iframe
 let detectFrame = setInterval(() => {
   const harvestIframe = document.getElementById('harvest-iframe');
   if (harvestIframe && !frameDetected) {
@@ -67,8 +68,7 @@ let detectFrame = setInterval(() => {
 
     harvestIframe.style.top = '10px';
 
-    const harvestOverlay = document.getElementsByClassName('harvest-overlay')[0];
-
+    const harvestOverlay = document.querySelector('.harvest-overlay');
     if (harvestOverlay) {
       harvestOverlay.style.background = 'white';
       harvestOverlay.style.overflow = 'hidden';
@@ -81,7 +81,7 @@ let detectFrame = setInterval(() => {
         harvestIframe.scrollHeight !== 0 &&
         harvestIframe.scrollHeight === scrollHeight
       ) {
-        document.body.style.height = harvestIframe.scrollHeight + 'px';
+        document.body.style.height = `${harvestIframe.scrollHeight}px`;
         document.body.style.width = '500px';
       } else {
         scrollHeight = harvestIframe.scrollHeight;
@@ -89,8 +89,8 @@ let detectFrame = setInterval(() => {
     }, 100);
   }
 
-  if (harvestIframe == null && frameDetected) {
+  if (!harvestIframe && frameDetected) {
     window.close();
     clearInterval(detectFrame);
   }
-}, 10);
+}, 500);
