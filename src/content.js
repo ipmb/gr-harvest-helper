@@ -14,45 +14,45 @@ function detectPlatform() {
 // Function to retrieve task details for JIRA
 async function jiraGetIssueTitle() {
   let issueId;
-  const issueIdMatches = document.title.match(/\[(.*?)]/);
+  let issueIdMatches = document.title.match(/\[(.*?)]/);
 
   if (issueIdMatches) {
     issueId = issueIdMatches[1];
   } else {
-    // fallback to get issue id from the URL
+    // fallback to get issue id from the url
     const urlParams = new URLSearchParams(window.location.search);
     issueId = urlParams.get('selectedIssue');
   }
 
-  if (!issueId) return { id: 'No ID', title: 'Unknown' };
+  if (!issueId) return '';
 
-  try {
-    const protocol = window.location.protocol;
-    const hostname = window.location.hostname;
-    const issueTitle = await fetch(`${protocol}//${hostname}/rest/api/2/issue/${issueId}`, {
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((response) => response.json())
-      .then((data) => data.fields.summary);
-
-    return { id: issueId, title: `${issueId}: ${issueTitle}` };
-  } catch (error) {
-    GRlog(`Error fetching JIRA issue title: ${error.message}`);
-    return { id: issueId, title: 'Unknown' };
-  }
+  const protocol = window.location.protocol;
+  const hostname = window.location.hostname;
+  const issueTitle = await fetch(protocol + '//' + hostname + '/rest/api/2/issue/' + issueId, {
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data.fields.summary;
+    });
+  return {
+    id: issueId,
+    title: `${issueId}: ${issueTitle}`,
+  };
 }
 
 // Function to retrieve task details for Zammad
 function zammadGetIssueTitle() {
   const title =
-    document.querySelector('.ticket-title-update.js-objectTitle')?.textContent || 'No Title';
-  return { id: 'N/A', title };
+    document.getElementsByClassName('ticket-title-update js-objectTitle')[0].textContent ||
+    'No Title';
+  return { title };
 }
 
 // Function to retrieve task details for GitLab
 function gitlabGetIssueTitle() {
-  const taskName = document.querySelector('.title.qa-title')?.textContent || 'No Title';
-  const taskId = document.querySelector('.breadcrumbs-sub-title')?.textContent || 'No ID';
+  const taskName = document.getElementsByClassName('title qa-title')[0].textContent || 'No Title';
+  const taskId = document.getElementsByClassName('breadcrumbs-sub-title')[0].textContent || 'No ID';
   return { id: taskId, title: `${taskId}: ${taskName}` };
 }
 
@@ -60,8 +60,10 @@ function gitlabGetIssueTitle() {
 function githubGetIssueTitle() {
   const taskName = document.querySelector('.markdown-title')?.textContent.trim() || 'No Title';
   const taskId =
-    document.querySelector('h1[data-component="PH_Title"], h1.gh-header-title span')?.textContent ||
-    'No ID';
+    document
+      .querySelector('h1[data-component="PH_Title"], h1.gh-header-title')
+      ?.querySelector('span')?.textContent || 'No ID';
+
   return { id: taskId, title: `${taskId}: ${taskName}` };
 }
 

@@ -37,7 +37,7 @@
       "run_at": "document_idle"
     }
   ],
-  "permissions": ["activeTab", "tabs"],
+  "permissions": ["activeTab"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://platform.harvestapp.com"
   },
