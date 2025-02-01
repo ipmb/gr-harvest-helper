@@ -6,7 +6,7 @@ function GRlog(text) {
 function detectPlatform() {
   if (document.querySelector('[name=application-name]')?.content === 'JIRA') return 'jira';
   if (document.querySelector('.ticket-title-update.js-objectTitle')) return 'zammad';
-  if (document.querySelector('.detail-page-header-actions.js-issuable-actions')) return 'gitlab';
+  if (document.querySelector('.title.gl-heading-1')) return 'gitlab';
   if (document.querySelector('.markdown-title')) return 'github';
   return null;
 }
@@ -51,8 +51,12 @@ function zammadGetIssueTitle() {
 
 // Function to retrieve task details for GitLab
 function gitlabGetIssueTitle() {
-  const taskName = document.getElementsByClassName('title qa-title')[0].textContent || 'No Title';
-  const taskId = document.getElementsByClassName('breadcrumbs-sub-title')[0].textContent || 'No ID';
+  const taskName =
+    document.getElementsByClassName('title gl-heading-1')[0]?.textContent || 'No Title';
+  const taskId =
+    document
+      .querySelector('.gl-breadcrumbs .gl-breadcrumb-item:last-child a span')
+      ?.textContent.trim() || 'No ID';
   return { id: taskId, title: `${taskId}: ${taskName}` };
 }
 
@@ -93,6 +97,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'getTaskDetails') {
     const platform = detectPlatform();
     if (platform) {
+      GRlog(`Detected platform: ${platform}`);
       getTaskDetails(platform).then((details) => {
         if (details) {
           GRlog(`Sending task details: ${JSON.stringify(details)}`);
