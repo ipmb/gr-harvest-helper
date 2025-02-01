@@ -1,6 +1,19 @@
+function GRlog(text) {
+  console.log(`[GR-Time-Tracker]: ${text}`);
+}
+
+function GRWarn(text) {
+  console.warn(`[GR-Time-Tracker]: ${text}`);
+}
+
+function GRError(text) {
+  console.error(`[GR-Time-Tracker]: ${text}`);
+}
+
 let taskName = 'Unknown Task';
 let taskId = 'Unknown ID';
 let tabURL = '';
+let frameDetected = false;
 
 // Clear existing message listeners to prevent duplicates
 chrome.runtime.onMessage.removeListener(handleMessage);
@@ -10,10 +23,10 @@ function handleMessage(response) {
   if (response && response.id && response.title) {
     taskId = response.id;
     taskName = response.title;
-    console.log('[GR-Time-Tracker]: Message received from content script:', response);
+    GRlog('Message received from content script:', response);
     updateUI();
   } else {
-    console.warn('[GR-Time-Tracker]: Invalid message received:', response);
+    GRWarn('Invalid message received:', response);
   }
 }
 
@@ -25,28 +38,25 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   if (tabs.length > 0) {
     const activeTab = tabs[0];
     tabURL = activeTab.url;
-    console.log(`[GR-Time-Tracker]: Active Tab URL: ${tabURL}`);
+    GRlog(`Active Tab URL: ${tabURL}`);
 
     if (/^https:\/\/(gitlab\.com|github\.com|.*\.atlassian\.net|zammad\.com)/.test(tabURL)) {
-      console.log('[GR-Time-Tracker]: Sending message to content script...');
+      GRlog('Sending message to content script...');
       chrome.tabs.sendMessage(activeTab.id, { action: 'getTaskDetails' }, (response) => {
         if (chrome.runtime.lastError) {
-          console.error(
-            '[GR-Time-Tracker]: Error communicating with content script:',
-            chrome.runtime.lastError.message
-          );
+          GRError('Error communicating with content script:', chrome.runtime.lastError.message);
         } else if (response) {
-          console.log('[GR-Time-Tracker]: Response from content script:', response);
+          GRlog('Response from content script:', response);
           handleMessage(response);
         } else {
-          console.warn('[GR-Time-Tracker]: No response from content script.');
+          GRWarn('No response from content script.');
         }
       });
     } else {
-      console.error('[GR-Time-Tracker]: Unsupported URL, content script not loaded.');
+      GRError('Unsupported URL, content script not loaded.');
     }
   } else {
-    console.error('[GR-Time-Tracker]: No active tab found.');
+    GRError('No active tab found.');
   }
 });
 
@@ -57,6 +67,48 @@ function updateUI() {
     harvestTimer.setAttribute('data-item', JSON.stringify({ id: taskId, name: taskName }));
     harvestTimer.setAttribute('data-permalink', tabURL);
     harvestTimer.click();
-    console.log('[GR-Time-Tracker]: UI updated with task details.');
+    GRlog('UI updated with task details.');
   }
 }
+
+// Detect and adjust the iframe
+function detectAndAdjustIframe() {
+  const detectFrame = setInterval(() => {
+    const harvestIframe = document.getElementById('harvest-iframe');
+
+    if (harvestIframe && !frameDetected) {
+      frameDetected = true;
+
+      harvestIframe.style.top = '10px';
+
+      const harvestOverlay = document.querySelector('.harvest-overlay');
+      if (harvestOverlay) {
+        harvestOverlay.style.background = 'white';
+        harvestOverlay.style.overflow = 'hidden';
+      }
+
+      let scrollHeight = 300; // Default height
+      setInterval(() => {
+        if (
+          harvestIframe.scrollHeight !== 300 &&
+          harvestIframe.scrollHeight !== 0 &&
+          harvestIframe.scrollHeight !== scrollHeight
+        ) {
+          document.body.style.height = `${harvestIframe.scrollHeight}px`;
+          document.body.style.width = '500px';
+          scrollHeight = harvestIframe.scrollHeight;
+          GRlog(`Popup resized to height: ${scrollHeight}`);
+        }
+      }, 100);
+    }
+
+    if (!harvestIframe && frameDetected) {
+      GRlog('Iframe removed, closing popup.');
+      window.close();
+      clearInterval(detectFrame);
+    }
+  }, 10);
+}
+
+// Call the iframe detection function on load
+detectAndAdjustIframe();
