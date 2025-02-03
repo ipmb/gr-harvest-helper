@@ -1,96 +1,114 @@
-var taskName;
-var tabURL;
-var tab;
-var id;
-chrome.runtime.onMessage.addListener(function (response) {
-  id = response.id ? response.id : -1;
-  taskName = response.title ? response.title : 'select a task first';
-});
+function GRlog(text) {
+  console.log(`[GR-Time-Tracker]: ${text}`);
+}
 
-chrome.tabs.query({ currentWindow: true, active: true }, function (activeTabs) {
-  if (activeTabs.length === 0) {
-    console.error('No active tab found.');
-    return;
-  }
+function GRWarn(text) {
+  console.warn(`[GR-Time-Tracker]: ${text}`);
+}
 
-  const activeTab = activeTabs[0];
-  tab = activeTab;
-  tabURL = activeTab.url;
+function GRError(text) {
+  console.error(`[GR-Time-Tracker]: ${text}`);
+}
 
-  setTimeout(() => {
-    chrome.scripting.executeScript(
-      {
-        files: ['/ticketName.js'],
-        target: { tabId: activeTab.id },
-      },
-      () => {
-        if (chrome.runtime.lastError) {
-          console.error('Error executing script:', chrome.runtime.lastError.message);
-        } else {
-          console.log('Script executed successfully');
-        }
-      }
-    );
-  }, 1000);
-});
-
-let i = 0;
-const timeout = 2000; // 2 seconds
-const intervalTime = 10;
-
-// Polling for taskName
-let taskNameInterval = setInterval(() => {
-  if (taskName !== undefined || i === timeout / intervalTime) {
-    clearInterval(taskNameInterval);
-    let item = { id: id, name: taskName };
-    const harvestTimer = document.getElementsByClassName('harvest-timer')[0];
-    if (harvestTimer) {
-      harvestTimer.setAttribute('data-item', JSON.stringify(item));
-      if (taskName !== undefined) {
-        harvestTimer.setAttribute('data-permalink', tabURL);
-      }
-      harvestTimer.click();
-      harvestTimer.setAttribute('top', '10px');
-    }
-  } else {
-    i++;
-  }
-}, intervalTime);
-
+let taskName = 'Unknown Task';
+let taskId = 'Unknown ID';
+let tabURL = '';
 let frameDetected = false;
 
-// Detecting iframe
-let detectFrame = setInterval(() => {
-  const harvestIframe = document.getElementById('harvest-iframe');
-  if (harvestIframe && !frameDetected) {
-    frameDetected = true;
+// Clear existing message listeners to prevent duplicates
+chrome.runtime.onMessage.removeListener(handleMessage);
 
-    harvestIframe.style.top = '10px';
+// Message listener to process task details
+function handleMessage(response) {
+  if (response && response.id && response.title) {
+    taskId = response.id;
+    taskName = response.title;
+    GRlog('Message received from content script:', response);
+    updateUI();
+  } else {
+    GRWarn('Invalid message received:', response);
+  }
+}
 
-    const harvestOverlay = document.getElementsByClassName('harvest-overlay')[0];
+// Register the message listener
+chrome.runtime.onMessage.addListener(handleMessage);
 
-    if (harvestOverlay) {
-      harvestOverlay.style.background = 'white';
-      harvestOverlay.style.overflow = 'hidden';
+// Query the active tab and send a message to the content script
+chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  if (tabs.length > 0) {
+    const activeTab = tabs[0];
+    tabURL = activeTab.url;
+    GRlog(`Active Tab URL: ${tabURL}`);
+
+    if (/^https:\/\/(gitlab\.com|github\.com|.*\.atlassian\.net|zammad\.com)/.test(tabURL)) {
+      GRlog('Sending message to content script...');
+      chrome.tabs.sendMessage(activeTab.id, { action: 'getTaskDetails' }, (response) => {
+        if (chrome.runtime.lastError) {
+          GRError('Error communicating with content script:', chrome.runtime.lastError.message);
+        } else if (response) {
+          GRlog('Response from content script:', response);
+          handleMessage(response);
+        } else {
+          GRWarn('No response from content script.');
+        }
+      });
+    } else {
+      GRError('Unsupported URL, content script not loaded.');
+    }
+  } else {
+    GRError('No active tab found.');
+  }
+});
+
+// Update the popup UI
+function updateUI() {
+  const harvestTimer = document.querySelector('.harvest-timer');
+  if (harvestTimer) {
+    harvestTimer.setAttribute('data-item', JSON.stringify({ id: taskId, name: taskName }));
+    harvestTimer.setAttribute('data-permalink', tabURL);
+    harvestTimer.click();
+    GRlog('UI updated with task details.');
+  }
+}
+
+// Detect and adjust the iframe
+function detectAndAdjustIframe() {
+  const detectFrame = setInterval(() => {
+    const harvestIframe = document.getElementById('harvest-iframe');
+
+    if (harvestIframe && !frameDetected) {
+      frameDetected = true;
+
+      harvestIframe.style.top = '10px';
+
+      const harvestOverlay = document.querySelector('.harvest-overlay');
+      if (harvestOverlay) {
+        harvestOverlay.style.background = 'white';
+        harvestOverlay.style.overflow = 'hidden';
+      }
+
+      let scrollHeight = 300; // Default height
+      setInterval(() => {
+        if (
+          harvestIframe.scrollHeight !== 300 &&
+          harvestIframe.scrollHeight !== 0 &&
+          harvestIframe.scrollHeight !== scrollHeight
+        ) {
+          document.body.style.height = `${harvestIframe.scrollHeight}px`;
+          document.body.style.width = '500px';
+          scrollHeight = harvestIframe.scrollHeight;
+          GRlog(`Popup resized to height: ${scrollHeight}`);
+        }
+      }, 100);
     }
 
-    let scrollHeight = 300;
-    setInterval(() => {
-      if (
-        harvestIframe.scrollHeight !== 300 &&
-        harvestIframe.scrollHeight !== 0 &&
-        harvestIframe.scrollHeight === scrollHeight
-      ) {
-        document.body.style.height = harvestIframe.scrollHeight + 'px';
-        document.body.style.width = '500px';
-      } else {
-        scrollHeight = harvestIframe.scrollHeight;
-      }
-    }, 100);
-  }
+    if (!harvestIframe && frameDetected) {
+      GRlog('Iframe removed, closing popup.');
+      window.close();
+      clearInterval(detectFrame);
+    }
+  }, 10);
+}
 
-  if (harvestIframe == null && frameDetected) {
-    window.close();
-    clearInterval(detectFrame);
-  }
-}, 10);
+// Call the iframe detection function on load
+detectAndAdjustIframe();
