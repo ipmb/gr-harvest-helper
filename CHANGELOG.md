@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.3.3] - 2024-02-03
+## [3.3.4] - 2025-05-30
+
+### Added
+
+* Add support for Github Enterprise Server (GHES).
+
+## [3.3.3] - 2025-02-03
 
 ### Changed
 
@@ -14,19 +20,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Parse issue ID and title on GitLab issues and merge requests.
 
-## [3.3.2] - 2024-01-31
+## [3.3.2] - 2025-01-31
 
 ### Changed
 
 * Remove `host_permissions` from `manifest.json` and rely on user's active tab permission while clicking on the extension icon.
 
-## [3.3.1] - 2024-01-30
+## [3.3.1] - 2025-01-30
 
 ### Changed
 
 * Restrict permissions to only the necessary hosts.
 
-## [3.3.0] - 2024-01-29
+## [3.3.0] - 2025-01-29
 
 ### Fixed
 
@@ -35,13 +41,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fallback to default harvest configuration if no configuration is found.
 * Fix `harvestPlatform.js` to work with the latest Harvest platform.
 
-## [3.2.1] - 2024-01-28
+## [3.2.1] - 2025-01-28
 
 ### Fixed
 
 * Fixed `manifest.json` for Firefox specific requirements
 
-## [3.2.0] - 2024-01-27
+## [3.2.0] - 2025-01-27
 
 ### Fixed
  * Fix parsing of ID and title on GitHub issues and pull requests.

@@ -40,7 +40,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     tabURL = activeTab.url;
     GRlog(`Active Tab URL: ${tabURL}`);
 
-    if (/^https:\/\/(gitlab\.com|github\.com|.*\.atlassian\.net|zammad\.com)/.test(tabURL)) {
+    if (
+      /^https:\/\/(gitlab\.com|github\.com|.*\.ghe\.com|.*\.atlassian\.net|zammad\.com)/.test(
+        tabURL
+      )
+    ) {
       GRlog('Sending message to content script...');
       chrome.tabs.sendMessage(activeTab.id, { action: 'getTaskDetails' }, (response) => {
         if (chrome.runtime.lastError) {
