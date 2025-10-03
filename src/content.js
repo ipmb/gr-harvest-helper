@@ -64,9 +64,11 @@ function gitlabGetIssueTitle() {
 function githubGetIssueTitle() {
   const taskName = document.querySelector('.markdown-title')?.textContent.trim() || 'No Title';
   const taskId =
+    document.querySelector('.HeaderViewer-module__issueNumberText--ofQHQ')?.textContent ||
     document
       .querySelector('h1[data-component="PH_Title"], h1.gh-header-title')
-      ?.querySelector('span')?.textContent || 'No ID';
+      ?.querySelector('span')?.textContent ||
+    'No ID';
 
   return { id: taskId, title: `${taskId}: ${taskName}` };
 }
